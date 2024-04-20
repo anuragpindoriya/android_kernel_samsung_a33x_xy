@@ -126,6 +126,9 @@ static int build_clk_table(void)
 	}
 	clock_table = kcalloc(array_size, sizeof(*clock_table), GFP_KERNEL);
 
+	if (!clock_table)
+		return -ENOMEM;
+
 	for (i = 0; i < array_size; i++) {
 		clock_table[i].clock = custom_clock[i];
 		clock_table[i].min_threshold = custom_min_threshold[i];
@@ -157,6 +160,7 @@ static int build_clk_table(void)
 				clock_table[i].cpu_big_max_freq);
 		}
 	}
+
 	return 0;
 }
 
