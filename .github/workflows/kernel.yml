@@ -1,17 +1,26 @@
-name: KBuild
+name: Samsung-A33-Kernel-Builder
 
 on:
   workflow_dispatch:
 
 jobs:
-  kb:
+  Kernel-Builder:
     runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    
+    - name: Create Kernel Name
+        run : |
+          latest_version_of_kernel_su=$(curl -s https://api.github.com/repos/tiann/KernelSU/releases/latest | jq -r '.tag_name')
+          timestamp=$(TZ=UTC-8 date +%Y%m%d%H%M)
+          final_tag="${latest_version_of_kernel_su}.${timestamp}"  # Consistent naming
+          echo "FINAL_TAG=$final_tag" >> $GITHUB_ENV  # Set only the necessary variable
+    
     - name: Clean
       uses: rokibhasansagar/slimhub_actions@main
+    
     - name: Install tools
       run: |
         sudo apt-get update -y &>/dev/null || sudo apt-get update -y &>/dev/null || true
@@ -21,6 +30,45 @@ jobs:
       run: |
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
         bash build.sh
+    
+    - name: Pack Kernel Image In AnyKernel3
+        run: |
+          # if [[ -f out/arch/arm64/boot/Image.gz ]]; then
+          #      cp out/arch/arm64/boot/Image.gz AK3/Image.gz
+          # fi
+          # if [ -f out/arch/arm64/boot/dts/qcom/sdmmagpie.dtb ]; then
+          #       cp out/arch/arm64/boot/dts/qcom/sdmmagpie.dtb AK3/dtb
+          # fi
+          # -- Remove AK3 folder from out
+          rm -rf out/AK3
+          
+          # -- Make Copy of AK3 in out
+          cp -r AK3 out/
+          
+          # -- Copy Kernel Image into AK3
+          cp out/arch/arm64/boot/Image out/AK3/Image
+          
+          # -- Copy DTB file from " ut/arch/arm64/boot/dts/qcom/ " to " out/AK3 "
+          #if [ -f out/arch/arm64/boot/dts/qcom/sdmmagpie.dtb ]; then
+          #       cp out/arch/arm64/boot/dts/qcom/sdmmagpie.dtb out/AK3/dtb
+          #fi
+          
+          cd out/AK3
+          
+          # -- Create zip file of AnyKernel3
+          zip -r9 An-UNKNOWN-${{ env.FINAL_TAG }}-"$(/bin/date -u '+%Y%m%d-%H%M')".zip .
+    
+    - name: Releases Kernel TO Github
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          title: ${{ env.FINAL_TAG }}
+          automatic_release_tag: ${{ env.FINAL_TAG }}
+          prerelease: false
+          files: |
+            out/AK3/*.zip
+            out/arch/arm64/boot/Image.gz
+    
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
