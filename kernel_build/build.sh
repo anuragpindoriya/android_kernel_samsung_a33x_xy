@@ -185,5 +185,5 @@ rm -f "${OUT_VENDORBOOTIMG}.lz4"
 echo "Done! Output: $OUT_KERNELTAR"
 
 echo "Cleaning..."
-git clone https://github.com/anuragpindoriya/AnyKernel3.git -b samsung-a33-ksu AK3
+git clone https://github.com/anuragpindoriya/AnyKernel3.git -b devices/samsung-a33-ksu AK3
 kfinish
