@@ -43,7 +43,7 @@ OUT_VENDORBOOTIMG="$(pwd)/kernel_build/zip/vendor_boot.img"
 OUT_DTBIMAGE="$TMPDIR/dtb.img"
 
 # Kernel-side
-BUILD_ARGS="LOCALVERSION=-An-UNKNOWN-😍-$(LATEST_RELEASE) KBUILD_BUILD_USER=Anurag-Pindoriya KBUILD_BUILD_HOST=KSU"
+BUILD_ARGS="LOCALVERSION=-An-UNKNOWN-😍-$(LATEST_RELEASE)"
 
 kfinish() {
     rm -rf "$TMPDIR"
