@@ -13,6 +13,9 @@ if [ "$(uname -m)" != "x86_64" ]; then
   exit 1
 fi
 
+#Get KernslSu latest version and set into LATEST_RELEASE veriable 
+LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/tiann/KernelSU/releases/latest" | jq -r .tag_name)
+
 export PATH="$(pwd)/kernel_build/bin:$PATH"
 
 # Configs
@@ -40,7 +43,7 @@ OUT_VENDORBOOTIMG="$(pwd)/kernel_build/zip/vendor_boot.img"
 OUT_DTBIMAGE="$TMPDIR/dtb.img"
 
 # Kernel-side
-BUILD_ARGS="LOCALVERSION=-XyUnbound-v2.2 KBUILD_BUILD_USER=Gabriel260BR KBUILD_BUILD_HOST=ExynosUnbound"
+BUILD_ARGS="LOCALVERSION=-An-UNKNOWN-😍-$(LATEST_RELEASE) KBUILD_BUILD_USER=Anurag-Pindoriya KBUILD_BUILD_HOST=KSU"
 
 kfinish() {
     rm -rf "$TMPDIR"
