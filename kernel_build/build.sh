@@ -199,5 +199,7 @@ echo "Done! Output: $OUT_KERNELTAR"
 echo "$(pwd)"
 echo "Cleaning..."
 git clone https://github.com/anuragpindoriya/AnyKernel3.git -b devices/samsung-a33-ksu AK3
+rm -rf AK3/.git
+rm -rf AK3/.github
 ls -l
 
