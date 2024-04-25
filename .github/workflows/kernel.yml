@@ -71,7 +71,7 @@ jobs:
 
           # -- Copy Kernel Image into AK3
 
-          cp out/arch/arm64/boot/Image out/AK3/Image
+          cp out/arch/arm64/boot/Image.gz out/AK3/Image.gz
 
 
           # -- Copy DTB file from " ut/arch/arm64/boot/dts/qcom/ " to " out/AK3
@@ -102,6 +102,12 @@ jobs:
           files: |
             out/AK3/*.zip
             out/arch/arm64/boot/Image.gz
+            out/arch/arm64/boot/dts/exynos/s5e8825.dtb
+            kernel_build/Kernel.zip
+            kernel_build/Kernel.tar
+            kernel_build/zip/boot.img
+            kernel_build/zip/vendor_boot.img
+            kernel_build/tmp/dtb.img
       
       - name: Upload
         uses: actions/upload-artifact@v4
