@@ -66,6 +66,8 @@ export TARGET_SOC=s5e8825
 export LLVM=1 LLVM_IAS=1
 export ARCH=arm64
 
+echo "$(pwd)"
+
 if [ ! -d "$PARENT_DIR/clang-r416183b" ]; then
     git clone https://github.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r416183b "$PARENT_DIR/clang-r416183b" --depth=1
 fi
@@ -74,10 +76,14 @@ if [ ! -d "$PARENT_DIR/build-tools" ]; then
     git clone https://android.googlesource.com/platform/prebuilts/build-tools "$PARENT_DIR/build-tools" --depth=1
 fi
 
+echo "$(pwd)"
+
 make -j$(nproc --all) -C $(pwd) O=out $BUILD_ARGS a33x_defconfig >/dev/null
 make -j$(nproc --all) -C $(pwd) O=out $BUILD_ARGS dtbs >/dev/null
 make -j$(nproc --all) -C $(pwd) O=out $BUILD_ARGS >/dev/null
 make -j$(nproc --all) -C $(pwd) O=out INSTALL_MOD_STRIP="--strip-debug --keep-section=.ARM.attributes" INSTALL_MOD_PATH="$MODULES_OUTDIR" modules_install >/dev/null
+
+echo "$(pwd)"
 
 rm -rf "$TMPDIR"
 rm -f "$OUT_BOOTIMG"
@@ -85,6 +91,8 @@ rm -f "$OUT_VENDORBOOTIMG"
 mkdir "$TMPDIR"
 mkdir -p "$MODULES_DIR/0.0"
 mkdir "$PLATFORM_RAMDISK_DIR"
+
+echo "$(pwd)"
 
 cp -rf "$IN_PLATFORM"/* "$PLATFORM_RAMDISK_DIR/"
 mkdir "$PLATFORM_RAMDISK_DIR/first_stage_ramdisk"
@@ -94,6 +102,8 @@ if ! find "$MODULES_OUTDIR/lib/modules" -mindepth 1 -type d | read; then
     echo "Unknown error!"
     exit 1
 fi
+
+echo "$(pwd)"
 
 missing_modules=""
 
@@ -125,6 +135,8 @@ cp -f "$IN_DLKM/modules.load" "$MODULES_DIR/0.0/modules.load"
 mv "$MODULES_DIR/0.0"/* "$MODULES_DIR/"
 rm -rf "$MODULES_DIR/0.0"
 
+echo "$(pwd)"
+
 echo "Building dtb image..."
 python2 "$MKDTBOIMG" create "$OUT_DTBIMAGE" --custom0=0x00000000 --custom1=0xff000000 --version=0 --page_size=2048 "$IN_DTB" || exit 1
 
@@ -138,6 +150,7 @@ $MKBOOTIMG --header_version 4 \
     --os_patch_level 2024-01 || exit 1
 
 echo "Done!"
+echo "$(pwd)"
 echo "Building vendor_boot image..."
 
 cd "$DLKM_RAMDISK_DIR"
@@ -161,7 +174,7 @@ $MKBOOTIMG --header_version 4 \
 cd "$DIR"
 
 echo "Done!"
-
+echo "$(pwd)"
 echo "Building zip..."
 cd "$(pwd)/kernel_build/zip"
 rm -f "$OUT_KERNELZIP"
@@ -172,7 +185,7 @@ cd "$DIR"
 rm -f "${OUT_BOOTIMG}.zst"
 rm -f "${OUT_VENDORBOOTIMG}.zst"
 echo "Done! Output: $OUT_KERNELZIP"
-
+echo "$(pwd)"
 echo "Building tar..."
 cd "$(pwd)/kernel_build"
 rm -f "$OUT_KERNELTAR"
@@ -183,7 +196,8 @@ cd "$DIR"
 rm -f "${OUT_BOOTIMG}.lz4"
 rm -f "${OUT_VENDORBOOTIMG}.lz4"
 echo "Done! Output: $OUT_KERNELTAR"
-
+echo "$(pwd)"
 echo "Cleaning..."
 git clone https://github.com/anuragpindoriya/AnyKernel3.git -b devices/samsung-a33-ksu AK3
+ls -l
 kfinish
