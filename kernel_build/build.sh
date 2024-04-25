@@ -200,4 +200,4 @@ echo "$(pwd)"
 echo "Cleaning..."
 git clone https://github.com/anuragpindoriya/AnyKernel3.git -b devices/samsung-a33-ksu AK3
 ls -l
-kfinish
+
