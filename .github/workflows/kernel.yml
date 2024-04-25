@@ -95,7 +95,7 @@ jobs:
       - name: Releases Kernel TO Github
         uses: marvinpinto/action-automatic-releases@latest
         with:
-          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          repo_token: '${{ secrets.GH_TOKEN }}'
           title: '${{ env.FINAL_TAG }}'
           automatic_release_tag: '${{ env.FINAL_TAG }}'
           prerelease: false
