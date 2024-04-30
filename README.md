@@ -148,3 +148,5 @@ a maintainer tree)
     - tag the patch subject with `ANDROID:`
     - add a `Bug:` tag with the Android bug (required for android-specific features)
 
+- Cradit 
+    - [Link](https://github.com/Gabriel2392/android_kernel_samsung_a33x_xy)
