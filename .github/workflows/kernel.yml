@@ -1,14 +1,20 @@
 name: Samsung-A33-Kernel-Builder
 'on':
   workflow_dispatch: null
+  schedule:
+    - cron: 0 0 * * 6
+  push:
+    branches:
+      - HEAD
+  pull_request:
+    branches:
+      - HEAD
 jobs:
   Kernel-Builder:
     runs-on: ubuntu-22.04
     steps:
-      
       - name: Checkout
         uses: actions/checkout@v2
-      
       - name: Create Kernel Name
         run: >
           latest_version_of_kernel_su=$(curl -s
@@ -22,10 +28,8 @@ jobs:
 
           echo "FINAL_TAG=$final_tag" >> $GITHUB_ENV  # Set only the necessary
           variable
-      
       - name: Clean
         uses: rokibhasansagar/slimhub_actions@main
-      
       - name: Install tools
         run: >
           sudo apt-get update -y &>/dev/null || sudo apt-get update -y
@@ -34,8 +38,8 @@ jobs:
           sudo apt-get upgrade -y &>/dev/null || sudo apt-get upgrade -y
           &>/dev/null || true
 
-          sudo apt-get install zip zstd tar lz4 cpio xz-utils -y || sudo apt-get install zip zstd tar lz4 cpio xz-utils -y
-      
+          sudo apt-get install zip zstd tar lz4 cpio xz-utils -y || sudo apt-get
+          install zip zstd tar lz4 cpio xz-utils -y
       - name: Build
         run: >
           curl -LSs
@@ -43,7 +47,6 @@ jobs:
           | bash -
 
           bash build.sh
-      
       - name: Pack Kernel Image In AnyKernel3
         run: >
           # if [[ -f out/arch/arm64/boot/Image.gz ]]; then
@@ -90,7 +93,6 @@ jobs:
 
           zip -r9 An-UNKNOWN-${{ env.FINAL_TAG }}-"$(/bin/date -u
           '+%Y%m%d-%H%M')".zip .
-      
       - name: Releases Kernel TO Github
         uses: marvinpinto/action-automatic-releases@latest
         with:
@@ -107,7 +109,6 @@ jobs:
             kernel_build/zip/boot.img
             kernel_build/zip/vendor_boot.img
             kernel_build/tmp/dtb.img
-      
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
