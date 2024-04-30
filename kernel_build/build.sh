@@ -178,12 +178,11 @@ echo "$(pwd)"
 echo "Building zip..."
 cd "$(pwd)/kernel_build/zip"
 rm -f "$OUT_KERNELZIP"
-zstd --ultra -22 -T$(nproc --all) "$OUT_BOOTIMG"
-zstd --ultra -22 -T$(nproc --all) "$OUT_VENDORBOOTIMG"
-zip -r1 -q "$OUT_KERNELZIP" META-INF commands.txt boot.img.zst vendor_boot.img.zst
+xz -9c boot.img > boot.xz
+xz -9c vendor_boot.img > vendor_boot.xz
+zip -r1 -q "$OUT_KERNELZIP" META-INF boot.xz vendor_boot.xz odm.xz vendor_dlkm.xz
+rm -f boot.xz vendor_boot.xz
 cd "$DIR"
-rm -f "${OUT_BOOTIMG}.zst"
-rm -f "${OUT_VENDORBOOTIMG}.zst"
 echo "Done! Output: $OUT_KERNELZIP"
 echo "$(pwd)"
 echo "Building tar..."
